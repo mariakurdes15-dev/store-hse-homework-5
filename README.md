@@ -1,4 +1,4 @@
-# store_hse
+# Домашнее задание 
 
 ### Архитектура
 
@@ -82,3 +82,47 @@ docker compose run --rm dbt docs generate
 ### ER-диаграмма
 
 [Посмотреть схему витрин](docs/erd.md)
+
+
+## Модель данных
+
+### ER-диаграмма схемы «звезда»
+
+```mermaid
+erDiagram
+    dim_customers ||--o{ fct_orders : "customer_id"
+    dim_dates ||--o{ fct_orders : "order_date"
+    fct_orders ||--o{ fct_order_items : "order_id"
+    dim_products ||--o{ fct_order_items : "product_id"
+```
+
+Подробная диаграмма: [docs/erd.md](docs/erd.md).
+
+### Зернистость и бизнес-вопросы
+
+| Витрина | Зернистость | Бизнес-вопрос |
+|---|---|---|
+| fct_orders | Один заказ | Сколько заказов оформлено, оплачено и возвращено? |
+| fct_order_items | Одна товарная позиция | Какие товары и в каком количестве продаются? |
+| dim_customers | Один клиент | Кто покупает, сколько заказов и выручки приносит клиент? |
+| dim_products | Один товар | Какие товары продаются по категориям и брендам? |
+| dim_dates | Один календарный день | Как меняются заказы и продажи по датам, месяцам и дням недели? |
+
+### Хранение в Greenplum
+
+| Витрина | Схема | Материализация | Распределение | Хранение |
+|---|---|---|---|---|
+| fct_orders | analytics_marts | table | order_id | AO Column, zlib |
+| fct_order_items | analytics_marts | table | order_id | AO Column, zlib |
+| dim_customers | analytics_marts | table | REPLICATED | стандартное |
+| dim_products | analytics_marts | table | REPLICATED | стандартное |
+| dim_dates | analytics_marts | table | REPLICATED | стандартное |
+
+Параметры хранения необходимо сверить
+с системными каталогами Greenplum.
+
+### Lineage
+
+Граф зависимостей создан с помощью dbt Docs.
+
+![Граф lineage моделей dbt](docs/lineage.png)
