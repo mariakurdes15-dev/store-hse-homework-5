@@ -118,8 +118,6 @@ erDiagram
 | dim_products | analytics_marts | table | REPLICATED | стандартное |
 | dim_dates | analytics_marts | table | REPLICATED | стандартное |
 
-Параметры хранения необходимо сверить
-с системными каталогами Greenplum.
 
 ### Lineage
 
