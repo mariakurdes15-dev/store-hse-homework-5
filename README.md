@@ -79,3 +79,6 @@ docker compose run --rm dbt docs generate
 - dim_dates: 133 дня
 - dbt build: ERROR=0
 
+### ER-диаграмма
+
+[Посмотреть схему витрин](docs/erd.md)
